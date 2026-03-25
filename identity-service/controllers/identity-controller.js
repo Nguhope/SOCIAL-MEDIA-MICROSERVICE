@@ -1,15 +1,16 @@
 const generateToken = require("../utils/generatedToken");
 const logger = require("../utils/Logger");
 const { validateRegistration } = require("../utils/validation");
+const User = require("../module/User"); // ⬅️ You were missing this import entirely
 
-
-
-//user registration
+// User registration
 const registerUser = async (req, res) => {
   logger.info("Registration endpoint hit....");
 
   try {
-    const {} = validateRegistration(req.body);
+    // ✅ FIX 1: Destructure { error, value } from validateRegistration
+    // You had `const {} = ...` which captured nothing
+    const { error, value } = validateRegistration(req.body);
 
     if (error) {
       logger.warn("Validation error", error.details[0].message);
@@ -19,9 +20,12 @@ const registerUser = async (req, res) => {
       });
     }
 
-    const { email, password, username } = req.body;
+    // ✅ FIX 2: Use validated `value` from Joi instead of raw req.body
+    const { email, password, username } = value;
 
-    let user = await UserActivation.findone({ $or: [{ email }, { username }] });
+    // ✅ FIX 3: `UserActivation` doesn't exist — use your actual model (User)
+    // ✅ FIX 4: `findone` doesn't exist — it's `findOne` (capital O)
+    let user = await User.findOne({ $or: [{ email }, { username }] });
 
     if (user) {
       logger.warn("User already exists", { email, username });
@@ -31,7 +35,8 @@ const registerUser = async (req, res) => {
       });
     }
 
-    user = new UserActivation({ username, email, password });
+    // ✅ FIX 3 again: Use User, not UserActivation
+    user = new User({ username, email, password });
     await user.save();
 
     logger.info("User registered successfully", user._id);
@@ -52,13 +57,6 @@ const registerUser = async (req, res) => {
     });
   }
 };
-
-//user login
-
-//refresh token
-
-//logout
-
 
 module.exports = {
   registerUser,

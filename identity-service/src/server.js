@@ -1,4 +1,6 @@
+// ✅ Correct - loads identity-service/.env
 require("dotenv").config();
+
 const mongoose = require("mongoose");
 const helmet = require("helmet");
 const cors = require("cors");
@@ -16,7 +18,7 @@ const PORT = process.env.PORT || 3001;
 
 // Connect to MongoDB
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(process.env.MONGODB_URI)
   .then(() => logger.info("Connected to MongoDB"))
   .catch((err) => logger.error("Failed to connect to MongoDB", err));
 
@@ -28,7 +30,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use((req, res, next) => {
-  logger.info(`${req.method} ${req.url}`);
+  logger.info(` Received${req.method} ${req.url}`);
   logger.info(`Request body: ${JSON.stringify(req.body)}`);
   next();
 });
@@ -72,7 +74,7 @@ const sensitiveLimiter = rateLimit({
 app.use("/api/auth/register", sensitiveLimiter);
 
 // ✅ FIXED ROUTE IMPORT HERE
-app.use("/api/auth", require("../routes/identity-service"));
+app.use("/api/auth", routes);
 
 // Error handling middleware
 app.use(errorHandler);
@@ -85,3 +87,7 @@ app.listen(PORT, () => {
 process.on("unhandledRejection", (reason, promise) => {
   logger.error("Unhandled Rejection at:", promise, "reason:", reason);
 });
+
+console.log("PORT FROM ENV:", process.env.PORT);
+console.log("FINAL PORT:", PORT);
+console.log("ENV FILE PATH:", require("path").resolve(__dirname, "../.env"));

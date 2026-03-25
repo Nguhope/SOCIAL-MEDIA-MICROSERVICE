@@ -31,15 +31,11 @@ const userSchema = new mongoose.Schema(
 );
 
 //  Hash password before saving
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next(); //  skip if password unchanged
+// ✅ Fix — remove next entirely, just use async/await
+userSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
 
-  try {
-    this.password = await argon2.hash(this.password);
-    next(); //  always call next!
-  } catch (error) {
-    next(error); //  pass error to mongoose
-  }
+  this.password = await argon2.hash(this.password);
 });
 
 //  Method to verify password on login
@@ -52,7 +48,7 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
 };
 
 
-userSchema.index({username:'text'})
+
 
 //  Hide password when sending user data as JSON
 userSchema.methods.toJSON = function () {
