@@ -8,3 +8,19 @@
 {"level":"error","message":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","service":"api-gateway","timestamp":"2026-03-26T15:58:34.988Z"}
 {"level":"error","message":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","service":"api-gateway","timestamp":"2026-03-26T15:58:59.323Z"}
 {"level":"error","message":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","service":"api-gateway","timestamp":"2026-03-26T15:58:59.323Z"}
+{"level":"error","message":"Proxy error: Cannot read properties of undefined (reading 'userId')","service":"api-gateway","timestamp":"2026-04-05T13:18:21.018Z"}
+{"level":"error","message":"Proxy error: Cannot read properties of undefined (reading 'userId')","service":"api-gateway","timestamp":"2026-04-05T13:18:21.018Z"}
+{"level":"error","message":"Proxy error: Cannot read properties of undefined (reading 'userId')","service":"api-gateway","timestamp":"2026-04-05T13:18:42.497Z"}
+{"level":"error","message":"Proxy error: Cannot read properties of undefined (reading 'userId')","service":"api-gateway","timestamp":"2026-04-05T13:18:42.497Z"}
+{"level":"error","message":"Proxy error: Cannot read properties of undefined (reading 'userId')","service":"api-gateway","timestamp":"2026-04-05T13:18:52.490Z"}
+{"level":"error","message":"Proxy error: Cannot read properties of undefined (reading 'userId')","service":"api-gateway","timestamp":"2026-04-05T13:18:52.490Z"}
+{"level":"error","message":"Proxy error: Cannot read properties of undefined (reading 'userId')","service":"api-gateway","timestamp":"2026-04-05T13:29:02.733Z"}
+{"level":"error","message":"Proxy error: Cannot read properties of undefined (reading 'userId')","service":"api-gateway","timestamp":"2026-04-05T13:29:02.733Z"}
+{"level":"error","message":"Proxy error: Cannot read properties of undefined (reading 'userId')","service":"api-gateway","timestamp":"2026-04-05T13:29:08.445Z"}
+{"level":"error","message":"Proxy error: Cannot read properties of undefined (reading 'userId')","service":"api-gateway","timestamp":"2026-04-05T13:29:08.445Z"}
+{"level":"error","message":"Proxy error: connect ECONNREFUSED ::1:3001","service":"api-gateway","timestamp":"2026-04-05T14:23:08.041Z"}
+{"level":"error","message":"Proxy error: connect ECONNREFUSED ::1:3001","service":"api-gateway","timestamp":"2026-04-05T14:23:08.041Z"}
+{"level":"error","message":"Proxy error: connect ECONNREFUSED ::1:3001","service":"api-gateway","timestamp":"2026-04-05T14:24:02.050Z"}
+{"level":"error","message":"Proxy error: connect ECONNREFUSED ::1:3001","service":"api-gateway","timestamp":"2026-04-05T14:24:02.050Z"}
+{"level":"error","message":"Proxy error: connect ECONNREFUSED ::1:3001","service":"api-gateway","timestamp":"2026-04-05T14:24:11.376Z"}
+{"level":"error","message":"Proxy error: connect ECONNREFUSED ::1:3001","service":"api-gateway","timestamp":"2026-04-05T14:24:11.376Z"}
