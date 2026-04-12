@@ -27,7 +27,9 @@ const ratelimitOptions = rateLimit({
   legacyHeaders: false,
   handler: (req, res) => {
     logger.warn(`Sensitive endpoint rate limit exceeded for IP: ${req.ip}`);
-    res.status(429).json({ message: "Too many requests, please try again later." });
+    res
+      .status(429)
+      .json({ message: "Too many requests, please try again later." });
   },
   store: new RedisStore({
     sendCommand: (...args) => redisClient.call(...args),
@@ -67,7 +69,9 @@ app.use(
       return proxyReqOpts;
     },
     userResDecorator: (proxyRes, proxyResData, userReq, userRes) => {
-      logger.info(`Response received from identity service: ${proxyRes.statusCode}`);
+      logger.info(
+        `Response received from identity service: ${proxyRes.statusCode}`,
+      );
       return proxyResData;
     },
   }),
@@ -85,9 +89,33 @@ app.use(
       return proxyReqOpts;
     },
     userResDecorator: (proxyRes, proxyResData, userReq, userRes) => {
-      logger.info(`Response received from post service: ${proxyRes.statusCode}`);
+      logger.info(
+        `Response received from post service: ${proxyRes.statusCode}`,
+      );
       return proxyResData;
     },
+  }),
+);
+
+// setting up proxy for our media service
+// ✅ Correct media proxy setup
+app.use(
+  "/v1/media",
+  validateToken,
+  proxy(process.env.MEDIA_SERVICE_URL, {
+    ...proxyOptions,
+    proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
+      // ✅ Only pass the user id — never touch Content-Type for multipart
+      proxyReqOpts.headers["x-user-id"] = srcReq.user.userId;
+      return proxyReqOpts;
+    },
+    userResDecorator: (proxyRes, proxyResData, userReq, userRes) => {
+      logger.info(
+        `Response received from media service: ${proxyRes.statusCode}`,
+      );
+      return proxyResData;
+    },
+    parseReqBody: false, // ✅ CRITICAL — lets the raw multipart stream pass through untouched
   }),
 );
 
@@ -95,6 +123,11 @@ app.use(errorhandler);
 
 app.listen(PORT, () => {
   logger.info(`API gateway is running on port ${PORT}`);
-  logger.info(`post service is running on port ${process.env.POST_SERVICE_URL}`);
+  logger.info(
+    `post service is running on port ${process.env.POST_SERVICE_URL}`,
+  );
+  logger.info(
+    `Media service is running on port ${process.env.MEDIA_SERVICE_URL}`,
+  );
   logger.info(`Redis Url service is running on port ${process.env.REDIS_URL}`);
 });
