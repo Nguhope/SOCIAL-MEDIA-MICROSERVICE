@@ -5,7 +5,7 @@ const Redis = require("ioredis");
 const cors = require("cors");
 const helmet = require("helmet");
 const postRoutes = require("./routes/post-routes");
-const logger = require("./utils/logger");
+const logger = require("./utils/Logger");
 const errorHandler = require("./middlewares/errorHandler");
 const { connectToRabbitMQ } = require("./utils/rabbitmq");
 
