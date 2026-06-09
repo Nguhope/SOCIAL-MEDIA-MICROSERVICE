@@ -36,12 +36,14 @@ const createPost = async (req, res) => {
     });
 
     await newlyCreatedPost.save();
+
     await invalidatePostcached(req, newlyCreatedPost._id.toString()); // Invalidate cache after creating a post
 
     // Publish event to RabbitMQ
     await publishEvent("post.created", {
       postId: newlyCreatedPost._id.toString(),
       userId: newlyCreatedPost.user,
+      authorId: newlyCreatedPost.user,
       content: newlyCreatedPost.content,
       mediaIds: newlyCreatedPost.mediaIds,
       createdAt: newlyCreatedPost.createdAt,
@@ -164,7 +166,7 @@ const deletePost = async (req, res) => {
 
     //publish post delete method
 
-    await piblishEvent("post.deleted", {
+    await publishEvent("post.deleted", {
       postId: post._id.toString(),
       userId: req.user.userId,
       mediaIds: post.mediaIds,

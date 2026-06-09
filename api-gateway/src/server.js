@@ -119,15 +119,38 @@ app.use(
   }),
 );
 
+
+app.use(
+  "/v1/search",
+  validateToken, // ✅ added
+  proxy(process.env.SEARCH_SERVICE_URL, {
+    ...proxyOptions,
+    proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
+      proxyReqOpts.headers["Content-Type"] = "application/json";
+      proxyReqOpts.headers["x-user-id"] = srcReq.user.userId; // ✅ now works
+      return proxyReqOpts;
+    },
+    userResDecorator: (proxyRes, proxyResData, userReq, userRes) => {
+      logger.info(
+        `Response received from search service: ${proxyRes.statusCode}`,
+      );
+      return proxyResData;
+    },
+  }),
+);
+
 app.use(errorhandler);
 
 app.listen(PORT, () => {
   logger.info(`API gateway is running on port ${PORT}`);
   logger.info(
-    `post service is running on port ${process.env.POST_SERVICE_URL}`,
+    `Post service is running on port ${process.env.POST_SERVICE_URL}`,
   );
   logger.info(
     `Media service is running on port ${process.env.MEDIA_SERVICE_URL}`,
+  );
+  logger.info(
+    `Search service is running on port ${process.env.SEARCH_SERVICE_URL}`,
   );
   logger.info(`Redis Url service is running on port ${process.env.REDIS_URL}`);
 });

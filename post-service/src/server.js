@@ -3,22 +3,17 @@ const express = require("express");
 const mongoose = require("mongoose");
 const Redis = require("ioredis");
 const cors = require("cors");
+const helmet = require("helmet");
 const postRoutes = require("./routes/post-routes");
 const logger = require("./utils/logger");
 const errorHandler = require("./middlewares/errorHandler");
-const helmet = require("helmet");
 const { connectToRabbitMQ } = require("./utils/rabbitmq");
 
 const app = express();
 const PORT = process.env.PORT || 3002;
 
-// Redis 
+// Redis
 const redis = new Redis(process.env.REDIS_URL);
-
-// Middlewares
-app.use(express.json());
-app.use(cors());
-app.use(helmet());
 
 // MongoDB
 mongoose
@@ -28,6 +23,11 @@ mongoose
 
 // homework --> implement Ip baseed rate limitng for sensitive endpoints like create post, update post, delete post etc.
 //  you can use redis to store the count of requests from each IP and reset it after a certain time period. this will help to prevent abuse and ensure fair usage of your API.
+
+// Middlewares
+app.use(express.json());
+app.use(cors());
+app.use(helmet());
 
 // Logger middleware
 app.use((req, res, next) => {
@@ -45,8 +45,6 @@ app.use(
   },
   postRoutes,
 );
-
-
 
 // Error handler (ALWAYS LAST)
 app.use(errorHandler);

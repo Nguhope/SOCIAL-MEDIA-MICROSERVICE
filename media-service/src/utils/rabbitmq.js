@@ -6,7 +6,6 @@ let channel = null;
 
 const EXCHANGE_NAME = "facebook_events";
 
-// Connect to RabbitMQ and create a channel
 async function connectToRabbitMQ() {
   try {
     connection = await amqp.connect(process.env.RABBITMQ_URL);
@@ -14,13 +13,25 @@ async function connectToRabbitMQ() {
 
     await channel.assertExchange(EXCHANGE_NAME, "topic", { durable: false });
 
+    // ✅ Handle disconnections
+    connection.on("close", () => {
+      logger.warn("RabbitMQ connection closed. Reconnecting...");
+      setTimeout(connectToRabbitMQ, 5000);
+    });
+
+    connection.on("error", (err) => {
+      logger.error("RabbitMQ connection error:", err);
+      setTimeout(connectToRabbitMQ, 5000);
+    });
+
     logger.info("Connected to RabbitMQ");
     return channel;
   } catch (e) {
     logger.error("Error connecting to RabbitMQ:", e);
+    setTimeout(connectToRabbitMQ, 5000);
   }
 }
-// Publish an event to RabbitMQ
+
 async function publishEvent(routingKey, message) {
   if (!channel) {
     await connectToRabbitMQ();
@@ -28,35 +39,23 @@ async function publishEvent(routingKey, message) {
   channel.publish(
     EXCHANGE_NAME,
     routingKey,
-    Buffer.from(JSON.stringify(message)),
+    Buffer.from(JSON.stringify(message))
   );
   logger.info(`Event published: ${routingKey}`, message);
 }
 
-async function publishEvent(routingKey, messsage) {
-  if (!channel) {
-    await connectToRabbitMQ();
-  }
-  channel.publish(
-    EXCHANGE_NAME,
-    routingKey,
-    Buffer.from(JSON.stringify(messsage)),
-  );
-
-  logger.info(`Event published: ${routingKey}`, messsage);
-}
-
-async function consumeEvent(routingKey, message) {
+async function consumeEvent(routingKey, callback) { // ✅ renamed message to callback
   if (!channel) {
     await connectToRabbitMQ();
   }
 
   const q = await channel.assertQueue("", { exclusive: true });
   await channel.bindQueue(q.queue, EXCHANGE_NAME, routingKey);
+
   channel.consume(q.queue, (msg) => {
     if (msg !== null) {
       const content = JSON.parse(msg.content.toString());
-      callback(content);
+      callback(content); // ✅ now callback is defined
       channel.ack(msg);
     }
   });
