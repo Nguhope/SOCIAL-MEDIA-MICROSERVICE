@@ -1,10 +1,10 @@
 FROM node:22-alpine
 
-WORKDIR /use/src/app
+WORKDIR /usr/src/app
 
-COPY package* .json ./
+COPY package*.json ./
 
-RUN npm ci  --only=production
+RUN npm ci --only=production
 
 COPY . .
 
