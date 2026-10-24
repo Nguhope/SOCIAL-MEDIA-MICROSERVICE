@@ -1,5 +1,5 @@
-const logger = require("../utils/logger");
-const Search = require("../models/search");
+const logger = require("../utils/Logger");
+const Search = require("../models/Search");
 
 const searchPostController = async (req, res) => {
   logger.info("Search endpoint hints");

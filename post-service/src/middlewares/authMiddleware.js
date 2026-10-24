@@ -1,4 +1,4 @@
-const logger = require("../utils/logger");
+const logger = require("../utils/Logger");
 
 const authenticateRequest = (req, res, next) => {
     const userId = req.headers["x-user-id"];
